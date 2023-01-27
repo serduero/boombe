@@ -1,4 +1,12 @@
-import { newPlayer, removePlayer, getTurno } from "./database.js";
+import {
+  newPlayer,
+  removePlayer,
+  iniciaTurno,
+  getTurno,
+  iniciaPartidaOk,
+  finPartida,
+  reset,
+} from "./database.js";
 
 //
 // todos los eventos del socket
@@ -15,7 +23,7 @@ export const tratamiento_Socket = (io) => {
     socket.on("cli:nick", (nickname) => {
       var numUsers = newPlayer(socket.id, nickname);
       // console.log(
-      //   `recibido de ${socket.id} el nick ${nickname} users: ${numUsers}`
+      //   `cli:nick de ${socket.id} el nick ${nickname} users: ${numUsers}`
       // );
 
       // si partida ya iniciada no dejamos a más jugadores
@@ -24,25 +32,68 @@ export const tratamiento_Socket = (io) => {
       }
 
       // enviamos a todos (incluido yo) el número de conectados
+      // console.log("emite ser:nump");
       io.sockets.emit("ser:nump", numUsers);
     });
 
-    socket.on("bomb:accion", ({ senderId, text, time }) => {
-      // console.log(`accion de cliente ${senderId} ${time}`);
-      // console.log(text);
-      socket.broadcast.emit("boom:acc:resto", { dato: text }); // a todos excepto "a mi"
-      var turno = getTurno();
-      // console.log(`turno: ${turno}`);
+    // jugador inicia la partida
+    socket.on("cli:ini", ({ senderId, x, y, mapa, time }) => {
+      // console.log(`cli:ini ${senderId} ${x} ${y} ${time}`);
+      // console.log(`${mapa}`);
+
+      // constrol por si varios a la vez inician: sólo uno entra
+      if (!iniciaPartidaOk()) {
+        return;
+      }
+
+      // lo trasladamos a todos (tambien al que envía)
+      // e iniciamos el turno
+      var nickTurno = iniciaTurno(senderId);
+      // console.log(`turno: ${nickTurno}`);
+
+      io.sockets.emit("ser:ini", {
+        idTurno: senderId,
+        nickTurno: nickTurno,
+        x: x,
+        y: y,
+        mapa: mapa,
+      });
     });
 
-    // se ha desconectado el jugador, lo quitemos de la lista y
-    // actualizamos número de los conectados a todos
+    // jugador clica una casilla
+    socket.on("cli:mov", ({ senderId, x, y, resultado, time }) => {
+      // console.log(`cli:mov ${senderId} ${x} ${y} ${resultado} ${time}`);
+
+      // lo trasladamos a todos (tambien al que envía)
+      // y continuamos con el siguiente turno
+      var nuevo = resultado === "curso" ? 1 : 0;
+      var turno = getTurno(nuevo);
+
+      // console.log(`turno: ${turno}`);
+      // console.log(turno.id);
+      // console.log(turno.nick);
+
+      io.sockets.emit("ser:mov", {
+        senderId: senderId,
+        idTurno: turno.id,
+        nickTurno: turno.nick,
+        x: x,
+        y: y,
+      });
+
+      // si la partida ha finalizado, nos lo guardamos
+      if (resultado != "curso") {
+        finPartida();
+      }
+    });
+
+    // se ha desconectado el jugador, reiniciamos
     socket.on("disconnect", () => {
       // console.log(`desconectado ${socket.id}`);
-      var numUsers = removePlayer(socket.id);
+      reset();
 
       // actualizamos enviando a todos el número de conectados
-      io.sockets.emit("ser:fin", numUsers);
+      io.sockets.emit("ser:fin", 0);
     });
   });
 };
