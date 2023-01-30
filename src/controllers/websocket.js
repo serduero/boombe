@@ -37,8 +37,8 @@ export const tratamiento_Socket = (io) => {
     });
 
     // jugador inicia la partida
-    socket.on("cli:ini", ({ senderId, x, y, mapa, time }) => {
-      // console.log(`cli:ini ${senderId} ${x} ${y} ${time}`);
+    socket.on("cli:ini", ({ senderId, x, y, mapa, timer, time }) => {
+      // console.log(`cli:ini ${senderId} ${x} ${y} ${timer}`);
       // console.log(`${mapa}`);
 
       // constrol por si varios a la vez inician: sólo uno entra
@@ -56,6 +56,7 @@ export const tratamiento_Socket = (io) => {
         nickTurno: nickTurno,
         x: x,
         y: y,
+        timer: timer,
         mapa: mapa,
       });
     });
