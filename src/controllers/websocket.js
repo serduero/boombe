@@ -13,7 +13,7 @@ import {
 //
 export const tratamiento_Socket = (io) => {
   io.on("connection", (socket) => {
-    // console.log(`nueva conexión ${socket.id}`);
+    console.log(`nueva conexión ${socket.id}`);
     /**
      * Eventos
      */
@@ -22,23 +22,26 @@ export const tratamiento_Socket = (io) => {
     // recibimos el nickname del nuevo jugador conectado
     socket.on("cli:nick", (nickname) => {
       var numUsers = newPlayer(socket.id, nickname);
-      // console.log(
-      //   `cli:nick de ${socket.id} el nick ${nickname} users: ${numUsers}`
-      // );
+      console.log(
+        `cli:nick de ${socket.id} el nick ${nickname} users: ${numUsers}`
+      );
 
       // si partida ya iniciada no dejamos a más jugadores
       if (numUsers === -1) {
-        socket.disconnect(true);
-      }
+        console.log(`ser ful a ${socket.id}`);
+        socket.emit("ser:ful", socket.id);
+      } else {
+        console.log("sigue");
 
-      // enviamos a todos (incluido yo) el número de conectados
-      // console.log("emite ser:nump");
-      io.sockets.emit("ser:nump", numUsers);
+        // enviamos a todos (incluido yo) el número de conectados
+        // console.log("emite ser:nump");
+        io.sockets.emit("ser:nump", numUsers);
+      }
     });
 
     // jugador inicia la partida
     socket.on("cli:ini", ({ senderId, x, y, mapa, timer, time }) => {
-      // console.log(`cli:ini ${senderId} ${x} ${y} ${timer}`);
+      console.log(`cli:ini ${senderId} ${x} ${y} ${timer}`);
       // console.log(`${mapa}`);
 
       // constrol por si varios a la vez inician: sólo uno entra
@@ -63,7 +66,7 @@ export const tratamiento_Socket = (io) => {
 
     // jugador clica una casilla
     socket.on("cli:mov", ({ senderId, x, y, resultado, time }) => {
-      // console.log(`cli:mov ${senderId} ${x} ${y} ${resultado} ${time}`);
+      console.log(`cli:mov ${senderId} ${x} ${y} ${resultado} ${time}`);
 
       // lo trasladamos a todos (tambien al que envía)
       // y continuamos con el siguiente turno
@@ -90,7 +93,7 @@ export const tratamiento_Socket = (io) => {
 
     // se ha desconectado el jugador, reiniciamos
     socket.on("disconnect", () => {
-      // console.log(`desconectado ${socket.id}`);
+      console.log(`desconectado ${socket.id}`);
       reset();
 
       // actualizamos enviando a todos el número de conectados
