@@ -6,6 +6,7 @@ import {
   iniciaPartidaOk,
   finPartida,
   reset,
+  enPartida,
 } from "./database.js";
 
 //
@@ -88,13 +89,17 @@ export const tratamiento_Socket = (io) => {
       }
     });
 
-    // se ha desconectado el jugador, reiniciamos
+    // se ha desconectado un jugador
     socket.on("disconnect", () => {
       // console.log(`desconectado ${socket.id}`);
-      reset();
 
-      // actualizamos enviando a todos el número de conectados
-      io.sockets.emit("ser:fin", 0);
+      // si es uno de la partida reiniciamos todo
+      if (enPartida(socket.id)) {
+        reset();
+
+        // actualizamos enviando a todos el número de conectados
+        io.sockets.emit("ser:fin", 0);
+      }
     });
   });
 };
