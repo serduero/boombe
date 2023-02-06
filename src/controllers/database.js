@@ -19,6 +19,11 @@ function newPlayer(id, nickname) {
   // TODO: guardar en BBDDs el master de la partida
   // console.log(`guardado: ${JSON.stringify(master)}`);
 
+  // console.log(`vector. long: ${master.length}`);
+  // for (var i = 0; i < master.length; i++) {
+  //   console.log(`${master[i].id} ${master[i].nick}`);
+  // }
+
   return master.length;
 }
 
@@ -68,7 +73,7 @@ function iniciaPartidaOk() {
   }
 }
 
-// Inicia la partida, si procede
+// Finaliza partida
 function finPartida() {
   // console.log("fin partida");
   partida_enCurso = false;
