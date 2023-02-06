@@ -10,9 +10,7 @@ var partida_enCurso = false;
 // nuevo jugador a la lista
 function newPlayer(id, nickname) {
   // si partida en curso no aceptamos a nadie más
-  // console.log(
-  //   `curso? ${partida_enCurso}  ${master.includes({ id: id, nick: nickname })}`
-  // );
+  // console.log(`curso? ${partida_enCurso}  ${nickname}`);
   if (partida_enCurso) {
     return -1;
   }

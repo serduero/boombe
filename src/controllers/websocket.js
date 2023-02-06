@@ -82,6 +82,7 @@ export const tratamiento_Socket = (io) => {
         nickTurno: turno.nick,
         x: x,
         y: y,
+        resultado: resultado,
       });
 
       // si la partida ha finalizado, nos lo guardamos
