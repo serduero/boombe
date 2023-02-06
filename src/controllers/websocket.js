@@ -105,7 +105,7 @@ export const tratamiento_Socket = (io) => {
 
     // envía un mensaje al resto
     socket.on("cli:msg", ({ senderId, msg, time }) => {
-      console.log(`cli:msg ${senderId} ${msg}`);
+      // console.log(`cli:msg ${senderId} ${msg}`);
 
       socket.broadcast.emit("ser:msg", {
         senderId: senderId,
