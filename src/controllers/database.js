@@ -1,3 +1,5 @@
+import { makeRoom } from "../helps/functions.js";
+
 // vector de objetos "room", "id" y "nick" de cada jugador (todos String)
 var master = [];
 
@@ -16,12 +18,16 @@ function newPlayer(id, nickname) {
   var idSala = partida_enCurso.findIndex((el) => el.enCurso === false);
 
   if (idSala == -1) {
-    // si no existe ninguna, la crearemos ahora con este Id
-    master.push({ room: id, id: id, nick: nickname });
-    partida_enCurso.push({ room: id, enCurso: false });
-    turno.push({ room: id, num: 0 });
+    // si no existe ninguna, la crearemos ahora
 
-    salaAsignada = id;
+    // sala aleatoria
+    const sala = makeRoom(10);
+
+    master.push({ room: sala, id: id, nick: nickname });
+    partida_enCurso.push({ room: sala, enCurso: false });
+    turno.push({ room: sala, num: 0 });
+
+    salaAsignada = sala;
   } else {
     // si ya existe una pendiente de iniciar, asignamos esa
     salaAsignada = partida_enCurso[idSala].room;
