@@ -10,7 +10,7 @@ var partida_enCurso = [];
 // nuevo jugador a la lista
 function newPlayer(id, nickname) {
   var salaAsignada = "";
-  console.log(`new player ${id}  ${nickname}`);
+  // console.log(`new player ${id}  ${nickname}`);
 
   // miramos si hay una sala abierta pendiente de que entren jugadores
   var idSala = partida_enCurso.findIndex((el) => el.enCurso === false);
@@ -28,12 +28,12 @@ function newPlayer(id, nickname) {
     master.push({ room: salaAsignada, id: id, nick: nickname });
   }
 
-  console.log("master:");
-  console.log(JSON.stringify(master, null, 4));
-  console.log("en curso:");
-  console.log(JSON.stringify(partida_enCurso, null, 4));
-  console.log("turno:");
-  console.log(JSON.stringify(turno, null, 4));
+  // console.log("master:");
+  // console.log(JSON.stringify(master, null, 4));
+  // console.log("en curso:");
+  // console.log(JSON.stringify(partida_enCurso, null, 4));
+  // console.log("turno:");
+  // console.log(JSON.stringify(turno, null, 4));
 
   var numUsr = numUsers(salaAsignada);
 
@@ -47,11 +47,9 @@ function numUsers(room) {
 
 // Inicia la partida, si procede y asigna el primer turno
 function iniciaPartidaOk(senderId) {
-  console.log(`inicia partida ${senderId}`);
+  // console.log(`inicia partida ${senderId}`);
   const sala = getRoom(senderId);
-  console.log(`sala ${sala}`);
   const indexSala = partida_enCurso.findIndex((el) => el.room === sala);
-  console.log(`indice sala ${indexSala}`);
 
   var ret = false;
 
@@ -60,29 +58,28 @@ function iniciaPartidaOk(senderId) {
     ret = true;
   }
 
-  console.log(JSON.stringify(partida_enCurso, null, 4));
-  console.log(`retorno: ${ret}`);
+  // console.log(JSON.stringify(partida_enCurso, null, 4));
+  // console.log(`retorno: ${ret}`);
   return ret;
 }
 
 // inicializa el turno con el id entrado y retorna el nickname
 function iniciaTurno(senderId) {
-  console.log(`inicia turno ${senderId}`);
+  // console.log(`inicia turno ${senderId}`);
   const sala = getRoom(senderId);
-  console.log(`sala ${sala}`);
   var subVectorSala = master.filter((el) => el.room == sala);
-  console.log(JSON.stringify(subVectorSala, null, 4));
+  // console.log(JSON.stringify(subVectorSala, null, 4));
 
   var indexTurno = subVectorSala.findIndex((el) => el.id === senderId);
-  console.log(`turno: ${indexTurno}  nick: ${subVectorSala[indexTurno].nick}`);
+  // console.log(`turno: ${indexTurno}  nick: ${subVectorSala[indexTurno].nick}`);
 
   // nos guardamos ese turno
   const indTurno = turno.findIndex((el) => el.room === sala);
   turno[indTurno].num = indexTurno;
 
-  console.log(
-    `nos guardamos el turno (index subvector): ${turno[indTurno].num}`
-  );
+  // console.log(
+  //   `nos guardamos el turno (index subvector): ${turno[indTurno].num}`
+  // );
 
   return { nick: subVectorSala[indexTurno].nick, sala: sala };
 }
@@ -90,21 +87,20 @@ function iniciaTurno(senderId) {
 // retorna el id del turno actual
 function getTurno(senderId, suma) {
   // obtenemos la sala del jugador
-  console.log(`get turno ${senderId} ${suma}`);
+  // console.log(`get turno ${senderId} ${suma}`);
   const sala = getRoom(senderId);
-  console.log(`sala ${sala}`);
 
   // después los jugadores de esa sala
   var subVectorSala = master.filter((el) => el.room == sala);
-  console.log("subvector:");
-  console.log(JSON.stringify(subVectorSala, null, 4));
+  // console.log("subvector:");
+  // console.log(JSON.stringify(subVectorSala, null, 4));
 
-  console.log("turno:");
-  console.log(JSON.stringify(turno, null, 4));
+  // console.log("turno:");
+  // console.log(JSON.stringify(turno, null, 4));
 
   // buscamosa el turno de esta sala
   var indexSala = turno.findIndex((el) => el.room === sala);
-  console.log(`indice sala ${indexSala}`);
+  // console.log(`indice sala ${indexSala}`);
 
   // el turno será el siguiente al actual
   turno[indexSala].num += suma;
@@ -112,12 +108,10 @@ function getTurno(senderId, suma) {
     turno[indexSala].num = 0;
   }
 
-  console.log(`turno ${turno[indexSala].num}, elemento:`);
-  console.log(JSON.stringify(subVectorSala[turno[indexSala].num], null, 4));
+  // console.log(`turno ${turno[indexSala].num}, elemento:`);
+  // console.log(JSON.stringify(subVectorSala[turno[indexSala].num], null, 4));
 
   const elem = subVectorSala[turno[indexSala].num];
-  console.log("elemento a retornar:");
-  console.log(JSON.stringify(elem, null, 4));
 
   return elem;
 }
@@ -128,21 +122,18 @@ function finPartida(id) {
 
   // obtenemos la sala del jugador
   const sala = getRoom(id);
-  // console.log(`sala ${sala}`);
 
   // buscamosa el elemento de partida en curso de esa sala
   var indexSala = partida_enCurso.findIndex((el) => el.room === sala);
-  // console.log(`indice sala ${indexSala}`);
 
   partida_enCurso[indexSala].enCurso = false;
 }
 
 // Reset total
 function reset(id) {
-  console.log(`reset total de ${id}`);
+  // console.log(`reset total de ${id}`);
 
   const sala = getRoom(id);
-  console.log(`sala: ${sala}`);
 
   function arrayRemove(arr, value) {
     return arr.filter(function (ele) {
@@ -154,12 +145,12 @@ function reset(id) {
   master = arrayRemove(master, sala);
   turno = arrayRemove(turno, sala);
 
-  console.log("master:");
-  console.log(JSON.stringify(master, null, 4));
-  console.log("en curso:");
-  console.log(JSON.stringify(partida_enCurso, null, 4));
-  console.log("turno:");
-  console.log(JSON.stringify(turno, null, 4));
+  // console.log("master:");
+  // console.log(JSON.stringify(master, null, 4));
+  // console.log("en curso:");
+  // console.log(JSON.stringify(partida_enCurso, null, 4));
+  // console.log("turno:");
+  // console.log(JSON.stringify(turno, null, 4));
 
   return sala;
 }
@@ -172,10 +163,7 @@ function getRoom(id) {
 
 // retorna si está o no en la partida este Id
 function enPartida(elemId) {
-  console.log(`en partida? ${elemId}`);
-
   const elem = master.findIndex((el) => el.id === elemId);
-  console.log(`elem: ${elem}`);
 
   return elem !== -1;
 }
@@ -190,7 +178,6 @@ function removePlayer(id) {
   master = arrayRemove(master, id);
 
   // TODO: guardar en BBDDs el master de la partida
-  // console.log(`borrado id ${id} vector: ${JSON.stringify(master)}`);
   return master.length;
 }
 
